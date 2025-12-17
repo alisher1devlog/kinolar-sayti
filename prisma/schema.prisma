@@ -76,13 +76,13 @@ model User {
 
 model Profile {
   id String @id @default(uuid())
-  user_id String @unique
-  user User @relation(fields: [user_id],references: [id])
   full_name String?
   phone String?
   country String?
-  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
+  user_id String @unique
+  user User @relation(fields: [user_id],references: [id])
   @@map("profiles")
 }
 
@@ -203,9 +203,9 @@ model Favorite {
 
 model Review {
   id String @id @default(uuid())
-  user_id String @unique
+  user_id String 
   user User @relation(fields: [user_id], references: [id])
-  movie_id String @unique
+  movie_id String 
   movie Movie @relation(fields: [movie_id], references: [id])
   rating Int  
   comment String? @db.Text
@@ -216,9 +216,9 @@ model Review {
 
 model WatchHistory {
   id String @id @default(uuid())
-  user_id String @unique
+  user_id String 
   user User @relation(fields: [user_id], references: [id])
-  movie_id String @unique
+  movie_id String 
   movie Movie @relation(fields: [movie_id], references: [id])
 
   watched_duration Int?
