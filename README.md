@@ -326,7 +326,7 @@ last_watched: TIMESTAMP DEFAULT NOW()
      ```
    - Cookie: `auth_token` tozalanadi
 
-### Profil
+### Profile
 
 1. **GET /api/profile**
 
