@@ -137,7 +137,7 @@ export class AuthService {
       }
 
       const payload = {
-        sub: user.id,
+        userId: user.id,
         email: user.email,
         role: user.role,
       };
@@ -156,7 +156,6 @@ export class AuthService {
       if (error instanceof HttpException) {
         throw error;
       }
-
       throw new InternalServerErrorException(`Login qilishda xatolik!`);
     }
   }
