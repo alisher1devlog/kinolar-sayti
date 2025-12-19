@@ -10,10 +10,17 @@ import { ProfileModule } from './profile/profile.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { CategoryModule } from './category/category.module';
 import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { MovieModule } from './movie/movie.module';
+import * as path from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', '..', '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,
@@ -22,6 +29,7 @@ import { FileModule } from './file/file.module';
     SubscriptionModule,
     CategoryModule,
     FileModule,
+    MovieModule,
   ],
   controllers: [AppController],
   providers: [AppService],

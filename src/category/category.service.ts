@@ -69,7 +69,7 @@ export class CategoryService {
       const category = await this.prisma.category.findUnique({
         where: { id },
       });
-      console.log(category)
+      console.log(category);
       if (!category)
         throw new NotFoundException('Bunday category mavjud emas!');
 
