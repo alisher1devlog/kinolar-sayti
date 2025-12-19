@@ -1,26 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class FileService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
-  }
+  async createFile(file: Express.Multer.File): Promise<string> {
+    try {
+      const fileName = uuid.v4() + path.extname(file.originalname);
 
-  findAll() {
-    return `This action returns all file`;
-  }
+      const filePath = path.resolve(__dirname, '..', '..', '..', 'uploads');
+      console.log(filePath);
+      if (!fs.existsSync(filePath)) {
+        fs.mkdirSync(filePath, { recursive: true });
+      }
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
+      fs.writeFileSync(path.join(filePath, fileName), file.buffer);
 
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} file`;
+      return fileName;
+    } catch (error) {
+      console.log(error);
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException("Faylni yozishda xatolik bo'ldi");
+    }
   }
 }
