@@ -28,4 +28,22 @@ export class FileService {
       throw new InternalServerErrorException("Faylni yozishda xatolik bo'ldi");
     }
   }
+  async removeFile(fileName: string) {
+    try {
+      const filePath = path.resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'uploads',
+        fileName,
+      );
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    } catch (error) {
+      console.error("Faylni o'chirishda xatolik:", error);
+    }
+  }
 }

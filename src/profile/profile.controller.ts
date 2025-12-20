@@ -14,14 +14,15 @@ export class ProfileController {
 
   @Get()
   @ApiOperation({ summary: "Profil ma'lumotlarini olish" })
-  getProfile(@CurrentUser('userId') userId: string) {
+  getProfile(@CurrentUser('sub') userId: string) {
+    console.log(userId);
     return this.profileService.getProfile(userId);
   }
 
   @Put()
   @ApiOperation({ summary: 'Profilni yangilash' })
   updateProfile(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser('sub') userId: string,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
     return this.profileService.updateProfile(userId, updateProfileDto);

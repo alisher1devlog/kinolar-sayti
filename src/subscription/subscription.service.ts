@@ -49,7 +49,7 @@ export class SubscriptionService {
       });
 
       if (!plan) throw new NotFoundException(`Bunday ta'rif rejasi topilmadi!`);
-
+      console.log(userId);
       const startDate = new Date();
       const endDate = new Date();
       endDate.setDate(startDate.getDate() + plan.duration_days);
@@ -65,6 +65,7 @@ export class SubscriptionService {
             auto_renew: dto.auto_renew,
           },
         });
+        console.log(newSubscription.user_id);
         const payment = await prisma.payment.create({
           data: {
             user_subscription_id: newSubscription.id,

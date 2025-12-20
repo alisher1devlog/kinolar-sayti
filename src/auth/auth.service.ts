@@ -137,11 +137,13 @@ export class AuthService {
       }
 
       const payload = {
-        userId: user.id,
+        sub: user.id,
         email: user.email,
         role: user.role,
       };
+
       const token = await this.jwtService.signAsync(payload);
+
       return {
         success: true,
         message: 'Muvaffaqiyatli tizimga kirdingiz',

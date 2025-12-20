@@ -3,21 +3,21 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   UseInterceptors,
   UploadedFiles,
+  Query,
+  Search,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
-import { UpdateMovieDto } from './dto/update-movie.dto';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -77,8 +77,43 @@ export class MovieController {
   }
 
   @Get()
-  findAll() {
-    return this.movieService.findAll();
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    example: 1,
+    description: 'Sahifa raqami',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    example: 10,
+    description: 'Nechta kino chiqishi',
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: "Kino nomi yoki tavsifi bo'yicha qidiruv",
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    required: false,
+    description: "Kategoriya IDsi bo'yicha filtr",
+  })
+  @ApiQuery({
+    name: 'sort',
+    required: false,
+    enum: ['asc', 'desc'],
+    example: 'desc',
+    description: 'Saralash (yangi/eski)',
+  })
+  findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') search: string,
+    @Query('cateforyId') categoryId: string,
+    @Query('sort') sort: 'asc' | 'desc',
+  ) {
+    return this.movieService.findAll({ page, limit, search, categoryId, sort });
   }
 
   @Get(':id')
