@@ -7,9 +7,7 @@ export class MailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: false,
+      service: 'gmail',
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
@@ -21,7 +19,7 @@ export class MailService {
     const mailOptions = {
       from: `"Kinolar Sayti" <${process.env.SMTP_USER}>`,
       to: email,
-      suject: `Tasdiqlash kodi - Kinolar.uz`,
+      subject: `Tasdiqlash kodi - Kinolar.uz`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
           <h2 style="color: #E50914;">Xush kelibsiz!</h2>
@@ -39,6 +37,7 @@ export class MailService {
       console.log(`Email yuborildi: ${email}`);
     } catch (error) {
       console.error('Email yuborishda xatolik:', error);
+      throw error;
     }
   }
 }

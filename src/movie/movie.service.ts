@@ -8,6 +8,9 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FileService } from '../file/file.service';
 import { Quality } from '@prisma/client';
+import { title } from 'process';
+import { contains } from 'class-validator';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 
 @Injectable()
 export class MovieService {
@@ -84,13 +87,66 @@ export class MovieService {
     });
   }
 
-  async findAll() {
-    return await this.prisma.movie.findMany({
-      include: {
-        categories: { include: { category: true } },
-        files: true,
+  async findAll(query: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    categoryId?: string;
+    sort?: 'asc' | 'desc';
+  }) {
+    const { page = 1, limit = 10, search, categoryId, sort = 'desc' } = query;
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+    if (categoryId) {
+      where.categories = {
+        some: {
+          category_id: categoryId,
+        },
+      };
+    }
+
+    const [movies, total] = await Promise.all([
+      this.prisma.movie.findMany({
+        where,
+        take: Number(limit),
+        skip,
+        orderBy: {
+          created_at: sort,
+        },
+        include: {
+          categories: {
+            select: {
+              category: {
+                select: { id: true, name: true, slug: true },
+              },
+            },
+          },
+          files: {
+            select: { file_url: true, quality: true },
+          },
+        },
+      }),
+      this.prisma.movie.count({ where }),
+    ]);
+    return {
+      success: true,
+      data: movies,
+      meta: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        pageCount: Math.ceil(total / Number(limit)),
       },
-    });
+    };
   }
 
   async findOne(id: string) {

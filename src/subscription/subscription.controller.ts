@@ -21,7 +21,7 @@ export class SubscriptionController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Obuna sotib olish' })
   purchase(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser('sub') userId: string,
     @Body() createSubscriptionDto: CreateSubscriptionDto,
   ) {
     return this.subscriptionService.purchase(userId, createSubscriptionDto);
